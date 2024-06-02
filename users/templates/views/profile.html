@@ -1,0 +1,59 @@
+{% extends "base/base.html" %} {% load django_bootstrap5 %} {% bootstrap_css %}
+{% bootstrap_javascript %} {% bootstrap_messages %} {% block "body" %}
+<main>
+  <div class="container">
+    <h1 class="py-4">Profile</h1>
+    <div>
+      <form
+        action=""
+        method="post"
+        enctype="multipart/form-data"
+        class="d-flex flex-column flex-gap-2 p-4"
+      >
+        {% csrf_token %}
+        <div class="d-flex flex-gap-2">
+          <div class="col-6">
+            {% bootstrap_form user_form %} 
+            {% bootstrap_form profile_form %}
+          </div>
+          <div class="col-6">{% bootstrap_form location_form %}</div>
+        </div>
+        <div class="100-vh d-flex justify-content-center">
+          <a href="{% url 'home' %}" class="p-2"
+            >{% bootstrap_button button_type="submit" content="Save" %}</a
+          >
+        </div>
+      </form>
+    </div>
+
+    <div>
+      <h2 class="py-4">Liked Listings</h2>
+      <table class="table">
+        <tbody>
+          {% for like_listing in user_liked_listings %}
+          <tr>
+            <th scope="row">{{ like_listing.listing.title | capfirst }}</th>
+            <td>{{ like_listing.like_date | capfirst }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h2 class="py-4">Your Listings</h2>
+      <table class="table">
+        <tbody>
+          {% for user_listing in user_listings %}
+          <tr>
+            <th scope="row">{{ user_listing.title | capfirst }}</th>
+            <td>{{ user_listing.author | capfirst }}</td>
+            <td><a href="{% url "edit" user_listing.id %}" type="button" class="btn btn-sm btn-outline-secondary">Edit</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
+{% endblock %}

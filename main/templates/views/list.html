@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load django_bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% bootstrap_messages %}
+
+{% block "body" %}
+
+    <main>
+        <div class="d-flex container pt-5">
+            <form action="" method="post" enctype="multipart/form-data" class="w-100 d-flex flex-column p-4 flex-gap-2">
+                {% csrf_token %}
+                <div class="d-flex flex-gap-2">
+                    <div class="col-6">
+                        {% bootstrap_form listing_form %}             
+                    </div>
+                    <div class="col-6">
+                        {% bootstrap_form location_form %}
+                    </div>
+                </div>
+                <div class="100-vh d-flex justify-content-center ">
+                    <a href="{% url 'home' %}" class="p-2">{% bootstrap_button button_type="submit" content="Submit" %}</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+{% endblock  %}

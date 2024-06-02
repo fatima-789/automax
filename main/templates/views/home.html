@@ -1,0 +1,48 @@
+{% extends "base/base.html" %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% bootstrap_css %}
+
+{% block "title" %}
+<title>Home</title>
+{% endblock %}
+
+{% block "body" %}
+<body>
+    <div class="container py-5 d-flex justify-content-around align-items-center">
+      <div class="py-5">
+        <h3>BookNest - Where Words Roost and Stories Soar!</h3>
+        <p class="col-md-10 fs-5">Books: Gateways to Infinite Worlds, Where Imagination Knows No Bounds. Explore, Discover, and Embrace the Magic of Reading as You Journey through the Realms of Knowledge, Emotion, and Adventure with Every Turn of the Page!</p>
+        <a class="btn bg-seagreen text-light btn-md" href={% url "list" %} type="button">Add your book</a>
+      </div>
+      <div>
+          <img src="{% static "images/list-image.png" %}" height=250px class="" />
+      </div>
+    </div>
+    <div class="container filter-nav">
+      <form action="" method="get" class="w-100 p-4 d-flex justify-content-center align-items-center flex-gap-2">
+        <div class="d-flex justify-content-center flex-gap-2">
+          {{ listing_filters.form }}
+        </div>
+        {% comment %} {% csrf_token %} {% endcomment %}
+        <button type="submit" class="btn" style="background-color: #e5e5e5"><img src="{% static "images/filter-icon.png" %}" height="35px" /></button>          
+    </form>
+    </div>
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% if listing_filters.qs %}
+              {% for listing in listing_filters.qs %}
+              
+                {% include "components/list-card.html" %}
+
+              {% endfor %}
+            {% else %}
+              <div class="d-flex justify-content-center align-items-center text-center"><h1 class="text-center">Not Found</h1></div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+</body>
+{% endblock  %}

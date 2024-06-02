@@ -1,0 +1,75 @@
+{% load static %}
+
+<div class="col">
+    <div class="card shadow-sm card-h">
+        <img src="{{ listing.image.url }}" height=300px class="rounded-3 m-1" />
+        <div class="card-body">
+            <div class="d-flex align-items-center">                
+                {% if listing.seller.photo %}
+                <img src="{{ listing.seller.photo.url }}" height="30px" class="rounded-circle" />
+                {% else %}
+                <img src="{% static "images/profile-icon.png" %}" height="30px" class="rounded-circle" />
+                {% endif %}
+                <p class="px-3 m-0 fw-bold">{{ listing.seller.user.username|title }}</p>
+            </div>
+            <hr class="w-25"/>
+            <h4>{{ listing.title }}</h4>
+            <p class="card-text card-text-limit">{{ listing.description }}</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{% url "listing" listing.id %}" type="button" class="btn btn-sm btn-outline-secondary">View</a>
+                <small class="text-body-secondary">{{listing.updated_at}}</small>
+                <button id="like_{{listing.id}}" class="btn btn-sm">
+
+                    {% if listing.id in like_listings_ids %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                        </svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                        </svg>
+                    {% endif %}
+
+                </button>
+      </div>
+    </div>
+</div>
+</div>
+
+<script>
+
+    $('#like_{{ listing.id }}').click( function () {
+        
+        $.ajax({
+
+            type : "POST",
+            url : "{% url 'like_listing' id=listing.id %}",
+            data : { 'csrfmiddlewaretoken' : '{{csrf_token}}' },
+            dataType : "json",
+
+            success: function(r) {
+                let heartIcon = $('#like_{{ listing.id }}').find('svg');
+                let svgHeartFillRed = 
+                    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="red" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                    </svg>`;
+                let svgHeartOutline = 
+                    `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                    </svg>`
+            
+                if (r.is_liked_by) {
+                    heartIcon.replaceWith(svgHeartFillRed); 
+                } else {
+                    heartIcon.replaceWith(svgHeartOutline); 
+                }
+            },
+             
+            error : function (rs, e) {
+                alert(e);
+            }
+        });
+
+    })
+
+</script>
